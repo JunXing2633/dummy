@@ -5,11 +5,13 @@ pipeline {
   }
   stages {
     stage('Scan') {
+      environment {
+        SONAR_LOGIN = credentials('admin') 
+        SONAR_PASSWORD = credentials('admin')
+      }
       steps {
-        withCredentials([usernamePassword(usernameVariable: 'admin', passwordVariable: 'admin')]) {
-          withSonarQubeEnv(installationName: 'sq1') { 
-            sh 'mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.login=$SONAR_LOGIN -Dsonar.password=$SONAR_PASSWORD'
-          }
+        withSonarQubeEnv(installationName: 'sq1') { 
+          sh "./mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.login=${SONAR_LOGIN} -Dsonar.password=${SONAR_PASSWORD}"
         }
       }
     }
